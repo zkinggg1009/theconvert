@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }}
         />
         {children}
+        <Analytics />
       </body>
     </html>
   );
