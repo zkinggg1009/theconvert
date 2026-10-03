@@ -2,7 +2,7 @@ import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import "./globals.css";
 
-const siteUrl = "https://theconvert.app/";
+const siteUrl = "https://theconvert.online/";
 const pageTitle = "TheConverT — Simple & Fast Unit Conversion";
 const metaDescription =
   "Free online unit converter for length, weight, temperature, area, volume and more. Fast, simple and accurate conversions on any device.";
