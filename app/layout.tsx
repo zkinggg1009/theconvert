@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 const siteUrl = "https://theconvert.online/";
-const pageTitle = "TheConverT — Simple & Fast Unit Conversion";
+const pageTitle = "TheConverT — Simple. Precise. Fast.";
 const metaDescription =
-  "Free online unit converter for length, weight, temperature, area, volume and more. Fast, simple and accurate conversions on any device.";
+  "Explore TheConverT's unit and currency converters: simple, precise tools for everyday conversions.";
 const socialDescription =
-  "Free online unit converter for length, weight, temperature, area, volume and more.";
+  "Discover TheConverT's Unit Converter and Currency tools for everyday conversions.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

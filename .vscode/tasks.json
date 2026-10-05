@@ -1,0 +1,53 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Information architecture production build",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Information architecture build retry",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"build"
+			],
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "Information pages focused lint",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"exec",
+				"--",
+				"eslint",
+				"components/NavigationPanel.tsx",
+				"components/InformationPage.tsx",
+				"lib/information-metadata.ts",
+				"app/about/page.tsx",
+				"app/mission/page.tsx",
+				"app/contact/page.tsx",
+				"app/how-it-works/page.tsx",
+				"app/faq/page.tsx",
+				"app/feedback/page.tsx",
+				"app/privacy/page.tsx",
+				"app/terms/page.tsx",
+				"app/sitemap.ts"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$eslint-stylish"
+			]
+		}
+	]
+}
