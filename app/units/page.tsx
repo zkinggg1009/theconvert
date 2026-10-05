@@ -6,6 +6,7 @@ import Converter from "@/components/Converter";
 import Header from "@/components/Header";
 import { categories, type Category } from "@/lib/conversions";
 import Footer from "@/components/Footer";
+import BackButton from "@/components/BackButton";
 
 export default function UnitsPage() {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -17,6 +18,9 @@ export default function UnitsPage() {
 
         {!selectedCategory ? (
           <main className="page-enter flex flex-1 flex-col items-center justify-start pt-8 pb-8 sm:pt-[clamp(3rem,10vh,6rem)] sm:pb-12">
+            <div className="mb-2 w-full max-w-md">
+              <BackButton />
+            </div>
             <div className="w-full max-w-md text-center">
               <h1 className="text-3xl font-medium text-[var(--foreground)] sm:text-4xl">
                 Unit Converter
@@ -33,11 +37,11 @@ export default function UnitsPage() {
             </div>
           </main>
         ) : (
-          <main className="page-enter flex flex-1 items-center justify-center py-6 sm:py-10">
-            <Converter
-              category={selectedCategory}
-              onBack={() => setSelectedCategory(null)}
-            />
+          <main className="page-enter flex flex-1 flex-col items-center justify-center py-6 sm:py-10">
+            <div className="mb-2 w-full max-w-xl">
+              <BackButton />
+            </div>
+            <Converter category={selectedCategory} onBack={() => setSelectedCategory(null)} />
           </main>
         )}
 

@@ -3,6 +3,7 @@ import CurrencyConverter from "@/components/CurrencyConverter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import BackButton from "@/components/BackButton";
 
 const pageTitle = "Currency Converter — Convert USD, EUR, GBP & More | TheConverT";
 const pageDescription =
@@ -96,6 +97,9 @@ export default function CurrencyPage() {
         <Header showTagline={false} />
 
         <main className="page-enter w-full flex-1 py-8 sm:py-12">
+          <div className="mx-auto mb-3 max-w-3xl">
+            <BackButton />
+          </div>
           <header className="mx-auto max-w-3xl text-center">
             <h1 className="text-3xl font-medium text-[var(--foreground)] sm:text-4xl">
               Currency

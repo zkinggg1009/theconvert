@@ -9,6 +9,7 @@ import { getExchangeRate, type ExchangeRate } from "@/lib/currency";
 import CurrencyConverter from "@/components/CurrencyConverter";
 import { notFound } from "next/navigation";
 import Footer from "@/components/Footer";
+import BackButton from "@/components/BackButton";
 
 export function generateStaticParams() {
   return getAllConversionPageSlugs().map((slug) => ({ slug }));
@@ -46,6 +47,9 @@ export default async function SeoConversionPage({ params }: { params: Promise<{ 
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
       <Header showTagline={false} />
       <main className="page-enter">
+        <div className="mx-auto max-w-4xl px-4 pt-3 sm:px-6 lg:px-8">
+          <BackButton />
+        </div>
         <ConversionPageLayout
           definition={definition}
           value={value}

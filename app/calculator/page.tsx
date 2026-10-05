@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Calculator from "@/components/Calculator";
 import Footer from "@/components/Footer";
+import BackButton from "@/components/BackButton";
 
 export const metadata: Metadata = {
   title: "Online Calculator",
@@ -29,6 +30,9 @@ export default function CalculatorPage() {
 
         <main className="page-enter flex flex-1 items-center justify-center py-8 sm:py-12">
           <div className="w-full max-w-lg text-center">
+            <div className="mb-2 text-left">
+              <BackButton />
+            </div>
             <div className="mb-6 text-center">
               <h1 className="text-[2.2rem] font-medium tracking-[-0.06em] text-[var(--foreground)] sm:text-[2.7rem]">
                 Calculator
