@@ -1,5 +1,24 @@
+import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Calculator from "@/components/Calculator";
+
+export const metadata: Metadata = {
+  title: "Online Calculator",
+  description: "Use TheConverT's simple online calculator for quick everyday arithmetic on desktop or mobile.",
+  alternates: { canonical: "https://theconvert.online/calculator" },
+  openGraph: {
+    type: "website",
+    url: "https://theconvert.online/calculator",
+    title: "Online Calculator | TheConverT",
+    description: "Perform quick everyday arithmetic with TheConverT's online calculator.",
+    siteName: "TheConverT",
+  },
+  twitter: {
+    card: "summary",
+    title: "Online Calculator | TheConverT",
+    description: "Perform quick everyday arithmetic with TheConverT's online calculator.",
+  },
+};
 
 export default function CalculatorPage() {
   return (

@@ -2,19 +2,19 @@ import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import "./globals.css";
 
-const siteUrl = "https://theconvert.online/";
-const pageTitle = "TheConverT — Simple. Precise. Fast.";
+const siteUrl = "https://theconvert.online";
 const metaDescription =
   "Explore TheConverT's unit and currency converters: simple, precise tools for everyday conversions.";
-const socialDescription =
-  "Discover TheConverT's Unit Converter and Currency tools for everyday conversions.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: pageTitle,
+  title: {
+    default: "TheConverT | Unit and Currency Converters",
+    template: "%s | TheConverT",
+  },
   description: metaDescription,
   alternates: {
-    canonical: siteUrl,
+    canonical: "/",
   },
   robots: {
     index: true,
@@ -23,14 +23,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: siteUrl,
-    title: pageTitle,
-    description: socialDescription,
+    title: "TheConverT | Unit and Currency Converters",
+    description: metaDescription,
     siteName: "TheConverT",
   },
   twitter: {
     card: "summary",
-    title: pageTitle,
-    description: socialDescription,
+    title: "TheConverT | Unit and Currency Converters",
+    description: metaDescription,
   },
 };
 
@@ -39,20 +39,20 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": "https://theconvert.app/#website",
+      "@id": `${siteUrl}/#website`,
       url: siteUrl,
       name: "TheConverT",
       description: metaDescription,
     },
     {
       "@type": "WebApplication",
-      "@id": "https://theconvert.app/#webapplication",
+      "@id": `${siteUrl}/#webapplication`,
       url: siteUrl,
       name: "TheConverT",
       description: metaDescription,
       applicationCategory: "UtilitiesApplication",
       isPartOf: {
-        "@id": "https://theconvert.app/#website",
+        "@id": `${siteUrl}/#website`,
       },
     },
   ],

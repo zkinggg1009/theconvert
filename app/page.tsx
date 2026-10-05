@@ -1,5 +1,24 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import Header from "@/components/Header";
+
+export const metadata: Metadata = {
+  title: "Unit & Currency Conversion Tools",
+  description: "Use TheConverT's simple online tools to convert everyday units, currencies, and values with clear results.",
+  alternates: { canonical: "https://theconvert.online/" },
+  openGraph: {
+    type: "website",
+    url: "https://theconvert.online/",
+    title: "Unit & Currency Conversion Tools | TheConverT",
+    description: "Convert everyday units and currencies with TheConverT's simple online tools.",
+    siteName: "TheConverT",
+  },
+  twitter: {
+    card: "summary",
+    title: "Unit & Currency Conversion Tools | TheConverT",
+    description: "Convert everyday units and currencies with TheConverT's simple online tools.",
+  },
+};
 
 const products = [
   {

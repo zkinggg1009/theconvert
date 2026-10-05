@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://theconvert.app/sitemap.xml",
+    sitemap: "https://theconvert.online/sitemap.xml",
   };
 }

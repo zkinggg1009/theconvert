@@ -14,25 +14,41 @@ import {
 
 type ConverterProps = {
   category: Category;
-  onBack: () => void;
+  onBack?: () => void;
+  initialFromUnit?: string;
+  initialToUnit?: string;
+  initialInputValue?: string;
+  embedded?: boolean;
 };
 
-export default function Converter({ category, onBack }: ConverterProps) {
+export default function Converter({
+  category,
+  onBack,
+  initialFromUnit,
+  initialToUnit,
+  initialInputValue = "10",
+  embedded = false,
+}: ConverterProps) {
   const units = categoryUnits[category];
-  const defaultUnits = getDefaultUnits(category);
-  const [fromUnit, setFromUnit] = useState(defaultUnits[0]);
-  const [toUnit, setToUnit] = useState(defaultUnits[1]);
-  const [inputValue, setInputValue] = useState("10");
+  const resolvedDefaults = initialFromUnit && initialToUnit
+    ? [initialFromUnit, initialToUnit]
+    : getDefaultUnits(category);
+  const [fromUnit, setFromUnit] = useState(resolvedDefaults[0]);
+  const [toUnit, setToUnit] = useState(resolvedDefaults[1]);
+  const [inputValue, setInputValue] = useState(initialInputValue);
   const [decimalPlaces, setDecimalPlaces] = useState(2);
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
 
   useEffect(() => {
-    const nextDefaults = getDefaultUnits(category);
+    const nextDefaults = initialFromUnit && initialToUnit
+      ? [initialFromUnit, initialToUnit]
+      : getDefaultUnits(category);
+
     setFromUnit(nextDefaults[0]);
     setToUnit(nextDefaults[1]);
-    setInputValue("10");
+    setInputValue(initialInputValue);
     setDecimalPlaces(2);
-  }, [category]);
+  }, [category, initialFromUnit, initialToUnit, initialInputValue]);
 
   const numericValue = useMemo(() => {
     if (inputValue === "") {
@@ -78,44 +94,74 @@ export default function Converter({ category, onBack }: ConverterProps) {
 
   return (
     <section className="w-full max-w-xl rounded-[2rem] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_1px_0_rgba(0,0,0,0.02)] transition-all duration-200 ease-out sm:p-7">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <button
-          type="button"
-          onClick={onBack}
-          className="inline-flex items-center gap-2 text-sm font-medium text-[var(--foreground)] transition-opacity duration-200 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
-        >
-          <span aria-hidden="true">←</span>
-          <span>Back</span>
-        </button>
-      </div>
-
-      <div className="mb-6 flex items-center justify-between gap-3">
-        <h2 className="min-w-0 truncate text-[2.1rem] font-medium tracking-[-0.05em] text-[var(--foreground)] sm:text-[2.5rem]">
-          {category}
-        </h2>
-
-        <button
-          type="button"
-          aria-label="Open calculator"
-          onClick={() => setIsCalculatorOpen(true)}
-          className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-2.5 py-2 text-[0.74rem] font-medium text-[var(--foreground)] transition-colors hover:border-[var(--border-strong)] hover:bg-[var(--panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] sm:px-3 sm:text-sm"
-        >
-          <svg
-            aria-hidden="true"
-            className="h-4 w-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.7"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+      {!embedded && onBack && (
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <button
+            type="button"
+            onClick={onBack}
+            className="inline-flex items-center gap-2 text-sm font-medium text-[var(--foreground)] transition-opacity duration-200 hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
           >
-            <rect x="4" y="3" width="16" height="18" rx="3" />
-            <path d="M8 8h8M8 12h8M8 16h5" />
-          </svg>
-          <span>Calculator</span>
-        </button>
-      </div>
+            <span aria-hidden="true">←</span>
+            <span>Back</span>
+          </button>
+        </div>
+      )}
+
+      {!embedded && (
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <h2 className="min-w-0 truncate text-[2.1rem] font-medium tracking-[-0.05em] text-[var(--foreground)] sm:text-[2.5rem]">
+            {category}
+          </h2>
+
+          <button
+            type="button"
+            aria-label="Open calculator"
+            onClick={() => setIsCalculatorOpen(true)}
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-2.5 py-2 text-[0.74rem] font-medium text-[var(--foreground)] transition-colors hover:border-[var(--border-strong)] hover:bg-[var(--panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] sm:px-3 sm:text-sm"
+          >
+            <svg
+              aria-hidden="true"
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="4" y="3" width="16" height="18" rx="3" />
+              <path d="M8 8h8M8 12h8M8 16h5" />
+            </svg>
+            <span>Calculator</span>
+          </button>
+        </div>
+      )}
+
+      {embedded && (
+        <div className="mb-6 flex justify-end">
+          <button
+            type="button"
+            aria-label="Open calculator"
+            onClick={() => setIsCalculatorOpen(true)}
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-2.5 py-2 text-[0.74rem] font-medium text-[var(--foreground)] transition-colors hover:border-[var(--border-strong)] hover:bg-[var(--panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] sm:px-3 sm:text-sm"
+          >
+            <svg
+              aria-hidden="true"
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="4" y="3" width="16" height="18" rx="3" />
+              <path d="M8 8h8M8 12h8M8 16h5" />
+            </svg>
+            <span>Calculator</span>
+          </button>
+        </div>
+      )}
 
       <div className="space-y-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
