@@ -1,5 +1,6 @@
 import InformationPage, { InformationSection } from "@/components/InformationPage";
 import { createInformationMetadata } from "@/lib/information-metadata";
+import FeedbackForm from "@/components/FeedbackForm";
 
 const description =
   "Ideas and issue reports help keep TheConverT clear and useful.";
@@ -25,12 +26,9 @@ export default function FeedbackPage() {
         </ul>
       </InformationSection>
 
-      <InformationSection title="Sending feedback">
-        <p>
-          TheConverT does not currently have a feedback form or published
-          submission address. This page does not send or store messages; a
-          working feedback channel will be added here when available.
-        </p>
+      <InformationSection title="Send feedback">
+        <p>Choose a topic and describe what happened or what you would like to see.</p>
+        <FeedbackForm />
       </InformationSection>
     </InformationPage>
   );

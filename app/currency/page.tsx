@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import CurrencyConverter from "@/components/CurrencyConverter";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Link from "next/link";
 
 const pageTitle = "Currency Converter — Convert USD, EUR, GBP & More | TheConverT";
 const pageDescription =
@@ -50,6 +52,18 @@ const faqs = [
   },
 ];
 
+const popularPairs = [
+  { from: "USD", to: "MYR" },
+  { from: "MYR", to: "USD" },
+  { from: "USD", to: "SGD" },
+  { from: "USD", to: "EUR" },
+  { from: "EUR", to: "USD" },
+  { from: "GBP", to: "USD" },
+  { from: "USD", to: "JPY" },
+  { from: "SGD", to: "MYR" },
+  { from: "MYR", to: "SGD" },
+];
+
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
@@ -81,7 +95,7 @@ export default function CurrencyPage() {
       <div className="mx-auto flex min-h-screen max-w-5xl flex-col px-4 sm:px-6 lg:px-8">
         <Header showTagline={false} />
 
-        <main className="w-full flex-1 py-8 sm:py-12">
+        <main className="page-enter w-full flex-1 py-8 sm:py-12">
           <header className="mx-auto max-w-3xl text-center">
             <h1 className="text-3xl font-medium text-[var(--foreground)] sm:text-4xl">
               Currency
@@ -121,11 +135,19 @@ export default function CurrencyPage() {
                 Popular Currency Pairs
               </h2>
               <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[var(--muted)]">
-                {["USD → MYR", "MYR → USD", "USD → SGD", "USD → EUR", "USD → GBP", "USD → JPY"].map(
-                  (pair) => (
-                    <li key={pair}>{pair}</li>
-                  ),
-                )}
+                {popularPairs.map(({ from, to }) => {
+                  const href = `/${from.toLowerCase()}-to-${to.toLowerCase()}`;
+                  return (
+                    <li key={href}>
+                      <Link
+                        href={href}
+                        className="underline decoration-transparent underline-offset-4 transition-colors hover:text-[var(--foreground)] hover:decoration-current focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+                      >
+                        {from} {"\u2192"} {to}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </section>
 
@@ -183,9 +205,7 @@ export default function CurrencyPage() {
           </div>
         </main>
 
-        <footer className="mt-auto px-2 pt-3 pb-2 text-center text-xs leading-relaxed text-[var(--muted)]">
-          © 2026 TheConverT · Built by King Tai · Privacy · Terms · Contact
-        </footer>
+        <Footer />
       </div>
       <script
         type="application/ld+json"

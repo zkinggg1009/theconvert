@@ -11,6 +11,9 @@
   --border: #e5e5e7;
   --border-strong: #d2d2d7;
   --ring: rgba(29, 29, 31, 0.12);
+  --icon-units: #4f46e5;
+  --icon-calculator: #475569;
+  --icon-currency: #047857;
 }
 
 html[data-theme="dark"] {
@@ -24,6 +27,9 @@ html[data-theme="dark"] {
   --border: #30343a;
   --border-strong: #41464d;
   --ring: rgba(232, 234, 237, 0.14);
+  --icon-units: #a5b4fc;
+  --icon-calculator: #cbd5e1;
+  --icon-currency: #6ee7b7;
 }
 
 html {
@@ -64,4 +70,35 @@ select {
 
 ::selection {
   background: rgba(29, 29, 31, 0.14);
+}
+
+@keyframes content-enter {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes value-change {
+  from { opacity: 0.72; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes panel-backdrop-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.page-enter { animation: content-enter 240ms ease-out both; }
+.selector-enter { animation: content-enter 200ms ease-out both; }
+.value-change { animation: value-change 220ms ease-out both; }
+dialog::backdrop { opacity: 0; transition: opacity 260ms ease-out; }
+dialog.panel-visible::backdrop { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  dialog::backdrop { transition-duration: 0.01ms; }
 }

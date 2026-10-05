@@ -19,9 +19,10 @@ export default function PrivacyPage() {
     >
       <InformationSection title="Current site behavior">
         <p>
-          The site does not currently provide user accounts or a form for
-          submitting personal information. Your light or dark theme preference
-          is stored in local browser storage.
+          The site does not provide user accounts. The Feedback form prepares a
+          message in your email app; information is sent only if you choose to
+          send that email. Your light or dark theme preference is stored in
+          local browser storage.
         </p>
       </InformationSection>
 

@@ -144,7 +144,7 @@ function CurrencySelector({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full z-30 mt-2 w-[min(21rem,calc(100vw-2.5rem))] rounded-2xl border border-[var(--border)] bg-[var(--panel)] p-2 shadow-xl backdrop-blur-xl">
+        <div className="selector-enter absolute right-0 top-full z-30 mt-2 w-[min(21rem,calc(100vw-2.5rem))] rounded-2xl border border-[var(--border)] bg-[var(--panel)] p-2 shadow-xl backdrop-blur-xl">
           <label className="sr-only" htmlFor={`currency-search-${side}`}>
             Search currencies
           </label>
@@ -252,6 +252,7 @@ export default function CurrencyConverter({
   const [error, setError] = useState<"currencies" | "rates" | null>(null);
   const [retryCount, setRetryCount] = useState(0);
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
+  const [swapRotated, setSwapRotated] = useState(false);
   const currenciesLoaded = useRef(false);
 
   useEffect(() => {
@@ -334,6 +335,7 @@ export default function CurrencyConverter({
       setIsLoading(true);
       setBase(quote);
       setQuote(base);
+      setSwapRotated((rotated) => !rotated);
     }
   };
 
@@ -410,7 +412,7 @@ export default function CurrencyConverter({
             aria-label={`Swap ${base} and ${quote}`}
             title="Swap currencies"
             onClick={swapCurrencies}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-xl text-[var(--foreground)] transition-colors hover:bg-[var(--input)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+            className={`flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-xl text-[var(--foreground)] transition-[background-color,transform] duration-200 hover:bg-[var(--input)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] motion-reduce:transition-none ${swapRotated ? "rotate-90" : "rotate-0"}`}
           >
             <span aria-hidden="true">⇅</span>
           </button>
@@ -432,9 +434,10 @@ export default function CurrencyConverter({
           </div>
           <div className="flex min-w-0 flex-col gap-1.5 min-[400px]:flex-row min-[400px]:items-center min-[400px]:justify-between">
             <output
+              key={convertedAmount ?? "unavailable"}
               aria-label={`Converted amount in ${quote}`}
               aria-live="polite"
-              className="w-full min-w-0 truncate py-1 text-3xl font-medium tabular-nums text-[var(--foreground)] min-[400px]:flex-1 sm:text-4xl"
+              className="value-change w-full min-w-0 truncate py-1 text-3xl font-medium tabular-nums text-[var(--foreground)] min-[400px]:flex-1 sm:text-4xl"
             >
               {convertedAmount === null ? "—" : formatAmount(convertedAmount)}
             </output>

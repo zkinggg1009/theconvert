@@ -5,6 +5,7 @@ import CategorySelector from "@/components/CategorySelector";
 import Converter from "@/components/Converter";
 import Header from "@/components/Header";
 import { categories, type Category } from "@/lib/conversions";
+import Footer from "@/components/Footer";
 
 export default function UnitsPage() {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -15,7 +16,7 @@ export default function UnitsPage() {
         <Header />
 
         {!selectedCategory ? (
-          <main className="flex flex-1 flex-col items-center justify-center py-8 sm:py-12">
+          <main className="page-enter flex flex-1 flex-col items-center justify-start pt-8 pb-8 sm:pt-[clamp(3rem,10vh,6rem)] sm:pb-12">
             <div className="w-full max-w-md text-center">
               <h1 className="text-3xl font-medium text-[var(--foreground)] sm:text-4xl">
                 Unit Converter
@@ -32,7 +33,7 @@ export default function UnitsPage() {
             </div>
           </main>
         ) : (
-          <main className="flex flex-1 items-center justify-center py-6 sm:py-10">
+          <main className="page-enter flex flex-1 items-center justify-center py-6 sm:py-10">
             <Converter
               category={selectedCategory}
               onBack={() => setSelectedCategory(null)}
@@ -40,9 +41,7 @@ export default function UnitsPage() {
           </main>
         )}
 
-        <footer className="mt-auto px-2 pt-3 pb-2 text-center text-xs leading-relaxed text-[var(--muted)]">
-          © 2026 TheConverT · Built by King Tai · Privacy · Terms · Contact
-        </footer>
+        <Footer />
       </div>
     </div>
   );

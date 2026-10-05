@@ -38,6 +38,7 @@ export default function Converter({
   const [inputValue, setInputValue] = useState(initialInputValue);
   const [decimalPlaces, setDecimalPlaces] = useState(2);
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
+  const [swapRotated, setSwapRotated] = useState(false);
 
   useEffect(() => {
     const nextDefaults = initialFromUnit && initialToUnit
@@ -82,6 +83,7 @@ export default function Converter({
   const handleSwap = () => {
     setFromUnit(toUnit);
     setToUnit(fromUnit);
+    setSwapRotated((rotated) => !rotated);
   };
 
   const applyCalculatorResult = (value: string) => {
@@ -205,7 +207,7 @@ export default function Converter({
             aria-label="Swap units"
             title="Swap units"
             onClick={handleSwap}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--panel)] text-lg text-[var(--foreground)] transition-colors hover:bg-[var(--input)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+            className={`flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--panel)] text-lg text-[var(--foreground)] transition-[background-color,transform] duration-200 hover:bg-[var(--input)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] motion-reduce:transition-none ${swapRotated ? "rotate-90" : "rotate-0"}`}
           >
             <span aria-hidden="true">⇅</span>
           </button>
@@ -215,11 +217,12 @@ export default function Converter({
           <div className="flex-1">
             <div className="relative">
               <input
+                key={formattedResult}
                 aria-label={`${category} result`}
                 type="text"
                 value={formattedResult}
                 readOnly
-                className="w-full rounded-[1.25rem] border border-[var(--border)] bg-[var(--input)] px-4 py-3.5 pr-24 text-xl text-[var(--foreground)] outline-none"
+                className="value-change w-full rounded-[1.25rem] border border-[var(--border)] bg-[var(--input)] px-4 py-3.5 pr-24 text-xl text-[var(--foreground)] outline-none"
               />
               <div className="pointer-events-none absolute inset-y-1 right-1 flex items-center rounded-xl bg-[var(--surface)] px-3 text-sm font-medium text-[var(--muted)]">
                 {getShortUnitLabel(toUnit, category)}

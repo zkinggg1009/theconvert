@@ -1,8 +1,9 @@
 import Link from "next/link";
 import InformationPage, { InformationSection } from "@/components/InformationPage";
 import { createInformationMetadata } from "@/lib/information-metadata";
+import { supportEmail, supportName } from "@/lib/contact";
 
-const description = "A straightforward place to find TheConverT contact information.";
+const description = "Contact TheConverT Support with questions, feedback, or reports about the site.";
 
 export const metadata = createInformationMetadata({
   title: "Contact",
@@ -17,17 +18,15 @@ export default function ContactPage() {
       title="Contact"
       description={description}
     >
-      <InformationSection title="Contact channel">
+      <InformationSection title={supportName}>
         <p>
-          A public email address, phone number, or contact form is not currently
-          available. We will add a direct channel here when one is ready.
+          Email us at <a className="font-medium text-[var(--foreground)] underline underline-offset-4" href={`mailto:${supportEmail}`}>{supportEmail}</a>.
         </p>
       </InformationSection>
 
       <InformationSection title="Share feedback">
         <p>
-          The Feedback page explains what kind of product feedback is useful and
-          whether a submission channel is available.
+          Use the feedback form to prepare a message about a bug, conversion issue, feature request, or suggestion.
         </p>
         <p>
           <Link

@@ -12,7 +12,7 @@ export default function CategorySelector({
   onSelect,
 }: CategorySelectorProps) {
   return (
-    <section className="w-full max-w-md text-center">
+    <section className="selector-enter w-full max-w-md text-center">
       <select
         defaultValue=""
         aria-label="Select a category"
@@ -20,7 +20,7 @@ export default function CategorySelector({
           const value = e.currentTarget.value;
           onSelect(value as Category);
         }}
-        className="mt-5 block w-full rounded-2xl border border-[var(--border)] bg-[var(--panel)] text-left text-base text-[var(--foreground)] shadow-[0_1px_0_rgba(0,0,0,0.02)] outline-none focus-visible:border-[var(--border-strong)] focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+        className="mt-5 block w-full rounded-2xl border border-[var(--border)] bg-[var(--panel)] text-left text-base text-[var(--foreground)] shadow-[0_1px_0_rgba(0,0,0,0.02)] outline-none transition-[border-color,box-shadow] duration-200 focus-visible:border-[var(--border-strong)] focus-visible:ring-2 focus-visible:ring-[var(--ring)] motion-reduce:transition-none"
         style={{
           display: "block",
           width: "100%",

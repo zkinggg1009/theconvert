@@ -85,11 +85,12 @@ export default function NavigationPanel({
     }
 
     if (dialog.open) {
+      const closeDelay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 260;
       const timer = window.setTimeout(() => {
         if (dialog.open) {
           dialog.close();
         }
-      }, 240);
+      }, closeDelay);
       return () => window.clearTimeout(timer);
     }
   }, [open]);
@@ -139,9 +140,9 @@ export default function NavigationPanel({
       }}
       onClose={onClose}
       onClick={closeOnBackdropClick}
-      className={`fixed inset-y-0 right-0 left-auto m-0 h-dvh max-h-none w-[min(26rem,100vw)] max-w-none overflow-y-auto border-0 border-l border-[var(--border)] bg-[var(--background)] p-0 text-[var(--foreground)] shadow-[-20px_0_60px_rgba(0,0,0,0.16)] outline-none transition-transform duration-[240ms] ease-out backdrop:bg-[rgba(17,19,21,0.3)] backdrop:backdrop-blur-[2px] ${
+      className={`fixed inset-y-0 right-0 left-auto m-0 h-dvh max-h-none w-[min(26rem,100vw)] max-w-none overflow-y-auto border-0 border-l border-[var(--border)] bg-[var(--background)] p-0 text-[var(--foreground)] shadow-[-20px_0_60px_rgba(0,0,0,0.16)] outline-none transition-transform duration-[260ms] ease-out motion-reduce:transition-none backdrop:bg-[rgba(17,19,21,0.3)] backdrop:backdrop-blur-[2px] ${
         isVisible ? "translate-x-0" : "translate-x-full"
-      }`}
+      } ${isVisible ? "panel-visible" : ""}`}
     >
       <div className="flex min-h-full flex-col px-6 py-6 sm:px-8 sm:py-8">
         <div className="flex items-start justify-between gap-5">

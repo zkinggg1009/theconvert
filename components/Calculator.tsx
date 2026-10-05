@@ -18,8 +18,8 @@ type CalculatorProps = {
 
 const calculatorButtons: CalculatorButton[][] = [
   [
+    { label: "\u232b", kind: "utility" },
     { label: "AC", kind: "utility" },
-    { label: "±", kind: "utility" },
     { label: "%", kind: "utility" },
     { label: "÷", kind: "operator" },
   ],
@@ -33,7 +33,7 @@ const calculatorButtons: CalculatorButton[][] = [
     { label: "4", kind: "digit" },
     { label: "5", kind: "digit" },
     { label: "6", kind: "digit" },
-    { label: "−", kind: "operator" },
+    { label: "-", kind: "operator" },
   ],
   [
     { label: "1", kind: "digit" },
@@ -64,6 +64,13 @@ const formatResult = (value: number) => {
   return Number.isInteger(rounded) ? String(rounded) : rounded.toString();
 };
 
+const formatDisplayResult = (value: string) => {
+  const numeric = Number(value);
+  return Number.isFinite(numeric)
+    ? new Intl.NumberFormat("en-US", { maximumFractionDigits: 10 }).format(numeric)
+    : value;
+};
+
 const evaluateExpression = (expression: string) => {
   const cleaned = expression.replace(/\s+/g, "").trim();
 
@@ -78,7 +85,6 @@ const evaluateExpression = (expression: string) => {
   }
 
   try {
-    // eslint-disable-next-line no-new-func
     const evaluated = Function(`"use strict"; return (${sanitized});`)();
     return Number.isFinite(evaluated) ? Number(evaluated) : null;
   } catch {
@@ -91,13 +97,13 @@ export default function Calculator({
   onUseResult,
   onClose,
 }: CalculatorProps) {
-  const initialExpression = initialValue && initialValue !== "" ? initialValue : "250 ÷ 2";
+  const initialExpression = initialValue;
   const [expression, setExpression] = useState(initialExpression);
   const [result, setResult] = useState(() => {
-    const computed = initialValue && initialValue !== "" ? evaluateExpression(initialValue) : 125;
+    const computed = initialValue ? evaluateExpression(initialValue) : null;
     return computed === null ? "" : formatResult(computed);
   });
-  const [lastAction, setLastAction] = useState<"input" | "evaluate">("evaluate");
+  const [lastAction, setLastAction] = useState<"input" | "evaluate">(initialValue ? "evaluate" : "input");
   const [status, setStatus] = useState("Ready");
 
   const hasValidResult = useMemo(
@@ -106,11 +112,12 @@ export default function Calculator({
   );
 
   const evaluateCurrentExpression = () => {
-    const measured = evaluateExpression(expression);
+    const measured = evaluateExpression(expression || "0");
 
     if (measured === null) {
       setResult("Error");
       setStatus("Invalid expression");
+      setLastAction("evaluate");
       return;
     }
 
@@ -121,7 +128,7 @@ export default function Calculator({
   };
 
   const handleUseResult = () => {
-    const evaluated = evaluateExpression(expression);
+    const evaluated = evaluateExpression(expression || "0");
     const nextValue = evaluated === null ? null : formatResult(evaluated);
 
     if (!nextValue || nextValue === "Error") {
@@ -170,7 +177,7 @@ export default function Calculator({
 
   const appendOperator = (operator: string) => {
     if (lastAction === "evaluate") {
-      setExpression(`${result || "0"}${operator}`);
+      setExpression(`${result && result !== "Error" ? result : "0"}${operator}`);
       setResult("");
       setStatus("Ready");
       setLastAction("input");
@@ -179,12 +186,15 @@ export default function Calculator({
 
     setExpression((current) => {
       if (!current) {
-        return "";
+        return operator === "-" ? "-" : "";
       }
       const trimmed = current.trim();
-      const operatorChars = ["+", "−", "×", "÷"];
+      const operatorChars = ["+", "-", "×", "÷"];
       const lastChar = trimmed.slice(-1);
       if (operatorChars.includes(lastChar)) {
+        if (operator === "-" && lastChar !== "-") {
+          return `${trimmed}-`;
+        }
         return `${trimmed.slice(0, -1)}${operator}`;
       }
       return `${trimmed}${operator}`;
@@ -192,34 +202,8 @@ export default function Calculator({
     setStatus("Ready");
   };
 
-  const toggleSign = () => {
-    const activeValue = lastAction === "evaluate" && result ? result : expression;
-    const numeric = Number.parseFloat(activeValue.replace(/[^\d.-]/g, ""));
-
-    if (!Number.isFinite(numeric)) {
-      setExpression((current) => (current.startsWith("-") ? current.slice(1) : `-${current || ""}`));
-      setStatus("Ready");
-      return;
-    }
-
-    const nextValue = String(-numeric);
-    setExpression((current) => {
-      if (lastAction === "evaluate") {
-        return nextValue;
-      }
-      const match = current.match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?$/);
-      if (!match) {
-        return current.startsWith("-") ? current.slice(1) : `-${current}`;
-      }
-      return current.slice(0, match.index ?? 0) + nextValue;
-    });
-    setResult("");
-    setLastAction("input");
-    setStatus("Ready");
-  };
-
   const applyPercent = () => {
-    const calculated = evaluateExpression(expression);
+    const calculated = evaluateExpression(expression || "0");
     if (calculated === null) {
       setResult("Error");
       setStatus("Invalid expression");
@@ -233,6 +217,15 @@ export default function Calculator({
     setLastAction("evaluate");
   };
 
+  const deleteLastCharacter = () => {
+    const current = lastAction === "evaluate" ? result : expression;
+    const next = current === "Error" ? "" : current.slice(0, -1);
+    setExpression(next);
+    setResult("");
+    setLastAction("input");
+    setStatus("Ready");
+  };
+
   const clearCalculator = () => {
     setExpression("");
     setResult("");
@@ -242,7 +235,7 @@ export default function Calculator({
 
   const renderButton = (button: CalculatorButton, index: number) => {
     const sharedClasses =
-      "flex h-14 items-center justify-center rounded-[1.1rem] border text-[1.08rem] font-medium transition-all duration-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] sm:h-16 sm:text-[1.2rem]";
+      "flex h-14 items-center justify-center rounded-[1.1rem] border text-[1.08rem] font-medium transition-[transform,box-shadow,background-color] duration-150 active:scale-[0.97] active:shadow-inner focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] motion-reduce:transition-none sm:h-16 sm:text-[1.2rem]";
 
     const baseClass =
       button.kind === "operator"
@@ -256,15 +249,15 @@ export default function Calculator({
         clearCalculator();
         return;
       }
-      if (button.label === "±") {
-        toggleSign();
+      if (button.label === "\u232b") {
+        deleteLastCharacter();
         return;
       }
       if (button.label === "%") {
         applyPercent();
         return;
       }
-      if (["+", "−", "×", "÷"].includes(button.label)) {
+      if (["+", "-", "×", "÷"].includes(button.label)) {
         appendOperator(button.label);
         return;
       }
@@ -283,6 +276,7 @@ export default function Calculator({
       <button
         key={`${button.label}-${index}`}
         type="button"
+        aria-label={button.label === "\u232b" ? "Delete last digit" : button.label === "AC" ? "All clear" : button.label}
         onClick={onClick}
         className={`${sharedClasses} ${baseClass} ${button.span ?? ""}`}
       >
@@ -305,12 +299,14 @@ export default function Calculator({
       )}
 
       <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--panel)] p-4 sm:p-5">
-        <div className="mb-4 min-h-[6.25rem] overflow-hidden rounded-[1.15rem] border border-[var(--border)] bg-[var(--background)]/35 px-3.5 py-3 text-right sm:min-h-[7rem]">
-          <div className="min-h-[1.5rem] overflow-hidden text-ellipsis whitespace-nowrap text-[0.9rem] font-medium tracking-[0.02em] text-[var(--muted)] sm:text-[1rem]">
-            {expression || "0"}
+        <div className="mb-4 flex min-h-[6.25rem] flex-col justify-end overflow-hidden rounded-[1.15rem] border border-[var(--border)] bg-[var(--background)]/35 px-4 py-3 text-right sm:min-h-[7rem] sm:px-5">
+          <div className="min-h-[1.25rem] overflow-hidden text-ellipsis whitespace-nowrap text-[0.78rem] font-medium tracking-[0.02em] text-[var(--muted)] sm:text-[0.9rem]">
+            {lastAction === "evaluate" && /[+×÷*\/-]/.test(expression) ? `${expression} =` : ""}
           </div>
-          <div className="mt-2 overflow-hidden text-ellipsis whitespace-nowrap text-[2.1rem] font-semibold leading-none tracking-[-0.06em] text-[var(--foreground)] sm:text-[2.6rem]">
-            {result || "0"}
+          <div className="mt-1 min-h-[2.6rem] overflow-hidden text-ellipsis whitespace-nowrap text-[clamp(1.75rem,7.5vw,2.5rem)] font-semibold leading-none tracking-[-0.04em] text-[var(--foreground)] sm:min-h-[3rem] sm:text-[2.45rem]">
+            <span key={`${lastAction}:${lastAction === "evaluate" ? result : expression}`} className="value-change inline-block max-w-full">
+              {lastAction === "evaluate" && result ? formatDisplayResult(result) : expression || "0"}
+            </span>
           </div>
         </div>
 

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 type InformationPageProps = {
   section: "Company" | "Information" | "Legal";
@@ -40,7 +41,7 @@ export default function InformationPage({
       <div className="mx-auto flex min-h-screen max-w-5xl flex-col px-4 sm:px-6 lg:px-8">
         <Header />
 
-        <main className="mx-auto w-full max-w-3xl flex-1 py-10 sm:py-14">
+        <main className="page-enter mx-auto w-full max-w-3xl flex-1 py-10 sm:py-14">
           <header className="mb-8 sm:mb-10">
             <p className="mb-3 text-[0.68rem] font-semibold uppercase leading-[1.4] tracking-[0.14em] text-[var(--muted)]">
               {section}
@@ -56,9 +57,7 @@ export default function InformationPage({
           <article className="space-y-7">{children}</article>
         </main>
 
-        <footer className="mt-auto px-2 pt-3 pb-2 text-center text-xs leading-relaxed text-[var(--muted)]">
-          © 2026 TheConverT · Built by King Tai · Privacy · Terms · Contact
-        </footer>
+        <Footer />
       </div>
     </div>
   );

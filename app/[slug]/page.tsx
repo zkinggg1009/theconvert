@@ -8,6 +8,7 @@ import { convertValue } from "@/lib/conversions";
 import { getExchangeRate, type ExchangeRate } from "@/lib/currency";
 import CurrencyConverter from "@/components/CurrencyConverter";
 import { notFound } from "next/navigation";
+import Footer from "@/components/Footer";
 
 export function generateStaticParams() {
   return getAllConversionPageSlugs().map((slug) => ({ slug }));
@@ -44,7 +45,7 @@ export default async function SeoConversionPage({ params }: { params: Promise<{ 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
       <Header showTagline={false} />
-      <main>
+      <main className="page-enter">
         <ConversionPageLayout
           definition={definition}
           value={value}
@@ -75,9 +76,7 @@ export default async function SeoConversionPage({ params }: { params: Promise<{ 
           }
         />
       </main>
-      <footer className="mt-auto px-2 pb-2 pt-3 text-center text-xs leading-relaxed text-[var(--muted)]">
-        © 2026 TheConverT · Built by King Tai · Privacy · Terms · Contact
-      </footer>
+      <Footer className="pb-2 pt-3" />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Unit & Currency Conversion Tools",
@@ -26,7 +27,7 @@ const products = [
     title: "Unit Converter",
     description: "Convert everyday units simply and precisely.",
     icon: "units",
-    accent: "text-indigo-600 dark:text-indigo-300",
+    accent: "text-[var(--icon-units)]",
     glow: "radial-gradient(ellipse 58% 58% at 100% 0%, rgba(91, 103, 190, 0.075), transparent 100%)",
   },
   {
@@ -34,7 +35,7 @@ const products = [
     title: "Calculator",
     description: "Work through quick arithmetic with a premium minimal utility experience.",
     icon: "calculator",
-    accent: "text-slate-700 dark:text-slate-200",
+    accent: "text-[var(--icon-calculator)]",
     glow: "radial-gradient(ellipse 58% 58% at 100% 0%, rgba(110, 110, 115, 0.08), transparent 100%)",
   },
   {
@@ -42,7 +43,7 @@ const products = [
     title: "Currency",
     description: "Convert currencies using the latest available exchange rates.",
     icon: "currency",
-    accent: "text-emerald-700 dark:text-emerald-300",
+    accent: "text-[var(--icon-currency)]",
     glow: "radial-gradient(ellipse 58% 58% at 100% 0%, rgba(48, 143, 124, 0.075), transparent 100%)",
   },
 ];
@@ -59,7 +60,7 @@ export default function Home() {
       <div className="mx-auto flex min-h-screen max-w-5xl flex-col px-4 sm:px-6 lg:px-8">
         <Header brandVariant="home" />
 
-        <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center py-10 sm:py-14">
+        <main className="page-enter mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center py-10 sm:py-14">
           <section className="mb-10 text-center sm:mb-14">
             <p className="text-[1.35rem] font-semibold leading-[1.22] tracking-[-0.035em] text-[var(--foreground)] text-balance sm:text-[1.8rem] sm:leading-[1.16] sm:tracking-[-0.04em]">
               Tools for everyday conversion.
@@ -119,7 +120,7 @@ export default function Home() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       >
-                        <path d="M12 3v18M16 7.5C16 6.1 14.2 5 12 5S8 6.1 8 7.5 9.8 10 12 10s4 1.1 4 2.5-1.8 2.5-4 2.5-4-1.1-4-2.5" />
+                        <path d="M12 5v14M16 8c0-1.4-1.8-2.5-4-2.5S8 6.6 8 8s1.8 2.5 4 2.5 4 1.1 4 2.5-1.8 2.5-4 2.5-4-1.1-4-2.5" />
                       </svg>
                     ) : (
                       <svg
@@ -131,8 +132,14 @@ export default function Home() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       >
-                        <rect x="4" y="3" width="16" height="18" rx="3" />
-                        <path d="M8 8h8M8 12h8M8 16h5" />
+                        <rect x="4" y="2.5" width="16" height="19" rx="3" />
+                        <path d="M8 7h8" />
+                        <rect x="7.5" y="10" width="2.5" height="2.5" rx="0.5" />
+                        <rect x="10.75" y="10" width="2.5" height="2.5" rx="0.5" />
+                        <rect x="14" y="10" width="2.5" height="2.5" rx="0.5" />
+                        <rect x="7.5" y="14" width="2.5" height="2.5" rx="0.5" />
+                        <rect x="10.75" y="14" width="2.5" height="2.5" rx="0.5" />
+                        <rect x="14" y="14" width="2.5" height="2.5" rx="0.5" />
                       </svg>
                     )}
                   </div>
@@ -160,9 +167,7 @@ export default function Home() {
           </section>
         </main>
 
-        <footer className="mt-auto px-2 pt-3 pb-2 text-center text-xs leading-relaxed text-[var(--muted)]">
-          © 2026 TheConverT · Built by King Tai · Privacy · Terms · Contact
-        </footer>
+        <Footer />
       </div>
     </div>
   );
