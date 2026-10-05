@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Calculator from "@/components/Calculator";
 import DecimalSelector from "@/components/DecimalSelector";
 import UnitSelector from "@/components/UnitSelector";
 import {
@@ -23,6 +24,7 @@ export default function Converter({ category, onBack }: ConverterProps) {
   const [toUnit, setToUnit] = useState(defaultUnits[1]);
   const [inputValue, setInputValue] = useState("10");
   const [decimalPlaces, setDecimalPlaces] = useState(2);
+  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
 
   useEffect(() => {
     const nextDefaults = getDefaultUnits(category);
@@ -66,9 +68,17 @@ export default function Converter({ category, onBack }: ConverterProps) {
     setToUnit(fromUnit);
   };
 
+  const applyCalculatorResult = (value: string) => {
+    const cleaned = value.trim();
+    if (cleaned && /^-?\d*\.?\d+$/.test(cleaned)) {
+      setInputValue(cleaned);
+    }
+    setIsCalculatorOpen(false);
+  };
+
   return (
     <section className="w-full max-w-xl rounded-[2rem] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_1px_0_rgba(0,0,0,0.02)] transition-all duration-200 ease-out sm:p-7">
-      <div className="mb-5 flex items-center justify-between gap-4">
+      <div className="mb-4 flex items-center justify-between gap-3">
         <button
           type="button"
           onClick={onBack}
@@ -79,9 +89,33 @@ export default function Converter({ category, onBack }: ConverterProps) {
         </button>
       </div>
 
-      <h2 className="mb-6 text-[2.1rem] font-medium tracking-[-0.05em] text-[var(--foreground)] sm:text-[2.5rem]">
-        {category}
-      </h2>
+      <div className="mb-6 flex items-center justify-between gap-3">
+        <h2 className="min-w-0 truncate text-[2.1rem] font-medium tracking-[-0.05em] text-[var(--foreground)] sm:text-[2.5rem]">
+          {category}
+        </h2>
+
+        <button
+          type="button"
+          aria-label="Open calculator"
+          onClick={() => setIsCalculatorOpen(true)}
+          className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-2.5 py-2 text-[0.74rem] font-medium text-[var(--foreground)] transition-colors hover:border-[var(--border-strong)] hover:bg-[var(--panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] sm:px-3 sm:text-sm"
+        >
+          <svg
+            aria-hidden="true"
+            className="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="4" y="3" width="16" height="18" rx="3" />
+            <path d="M8 8h8M8 12h8M8 16h5" />
+          </svg>
+          <span>Calculator</span>
+        </button>
+      </div>
 
       <div className="space-y-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
@@ -174,6 +208,16 @@ export default function Converter({ category, onBack }: ConverterProps) {
           onChange={setDecimalPlaces}
         />
       </div>
+
+      {isCalculatorOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(17,19,21,0.34)] p-4 backdrop-blur-[2px]">
+          <Calculator
+            initialValue={inputValue}
+            onUseResult={applyCalculatorResult}
+            onClose={() => setIsCalculatorOpen(false)}
+          />
+        </div>
+      )}
     </section>
   );
 }

@@ -11,6 +11,14 @@ const products = [
     glow: "radial-gradient(ellipse 58% 58% at 100% 0%, rgba(91, 103, 190, 0.075), transparent 100%)",
   },
   {
+    href: "/calculator",
+    title: "Calculator",
+    description: "Work through quick arithmetic with a premium minimal utility experience.",
+    icon: "calculator",
+    accent: "text-slate-700 dark:text-slate-200",
+    glow: "radial-gradient(ellipse 58% 58% at 100% 0%, rgba(110, 110, 115, 0.08), transparent 100%)",
+  },
+  {
     href: "/currency",
     title: "Currency",
     description: "Convert currencies using the latest available exchange rates.",
@@ -53,12 +61,12 @@ export default function Home() {
               />
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-3">
               {products.map((product) => (
                 <Link
                   key={product.href}
                   href={product.href}
-                  className="group relative isolate flex min-h-60 flex-col overflow-hidden rounded-[1.35rem] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_12px_34px_rgba(29,29,31,0.035)] transition-[transform,border-color,box-shadow,background-color] duration-200 ease-out hover:-translate-y-1 hover:border-[var(--border-strong)] hover:bg-[var(--panel)] hover:shadow-[0_20px_44px_rgba(29,29,31,0.075)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] sm:min-h-64 sm:p-8"
+                  className="group relative isolate flex min-h-60 flex-col overflow-hidden rounded-[1.35rem] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_12px_34px_rgba(29,29,31,0.035)] transition-[transform,border-color,box-shadow,background-color] duration-200 ease-out hover:-translate-y-1 hover:border-[var(--border-strong)] hover:bg-[var(--panel)] hover:shadow-[0_20px_44px_rgba(29,29,31,0.075)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] sm:min-h-64 sm:p-8 md:w-full md:max-w-none"
                 >
                   <div
                     aria-hidden="true"
@@ -82,7 +90,7 @@ export default function Home() {
                       >
                         <path d="M4 8h15m0 0-3-3m3 3-3 3M20 16H5m0 0 3 3m-3-3 3-3" />
                       </svg>
-                    ) : (
+                    ) : product.icon === "currency" ? (
                       <svg
                         className="h-5 w-5"
                         viewBox="0 0 24 24"
@@ -93,6 +101,19 @@ export default function Home() {
                         strokeLinejoin="round"
                       >
                         <path d="M12 3v18M16 7.5C16 6.1 14.2 5 12 5S8 6.1 8 7.5 9.8 10 12 10s4 1.1 4 2.5-1.8 2.5-4 2.5-4-1.1-4-2.5" />
+                      </svg>
+                    ) : (
+                      <svg
+                        className="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <rect x="4" y="3" width="16" height="18" rx="3" />
+                        <path d="M8 8h8M8 12h8M8 16h5" />
                       </svg>
                     )}
                   </div>

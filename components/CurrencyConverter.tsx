@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Calculator from "@/components/Calculator";
 import {
   calculateConversion,
   type CurrencyMetadata,
@@ -240,6 +241,7 @@ export default function CurrencyConverter() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<"currencies" | "rates" | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const currenciesLoaded = useRef(false);
 
   useEffect(() => {
@@ -325,6 +327,14 @@ export default function CurrencyConverter() {
     }
   };
 
+  const applyCalculatorResult = (value: string) => {
+    const cleaned = value.trim();
+    if (cleaned && /^-?\d*\.?\d+$/.test(cleaned)) {
+      setAmount(cleaned);
+    }
+    setIsCalculatorOpen(false);
+  };
+
   return (
     <section
       aria-label="Currency converter"
@@ -339,18 +349,40 @@ export default function CurrencyConverter() {
             You send
           </label>
           <div className="flex min-w-0 flex-col gap-1.5 min-[400px]:flex-row min-[400px]:items-center min-[400px]:justify-between">
-            <input
-              id="currency-amount"
-              aria-label={`Amount in ${base}`}
-              type="text"
-              inputMode="decimal"
-              autoComplete="off"
-              maxLength={24}
-              value={amount}
-              onChange={(event) => updateAmount(event.target.value)}
-              className="w-full min-w-0 border-0 bg-transparent py-1 text-3xl! font-medium tabular-nums text-[var(--foreground)] outline-none placeholder:text-[var(--muted)] focus-visible:ring-2 focus-visible:ring-[var(--ring)] min-[400px]:flex-1 sm:text-4xl!"
-              placeholder="0"
-            />
+            <div className="flex w-full min-w-0 items-center gap-2 min-[400px]:flex-1">
+              <input
+                id="currency-amount"
+                aria-label={`Amount in ${base}`}
+                type="text"
+                inputMode="decimal"
+                autoComplete="off"
+                maxLength={24}
+                value={amount}
+                onChange={(event) => updateAmount(event.target.value)}
+                className="w-full min-w-0 border-0 bg-transparent py-1 text-3xl! font-medium tabular-nums text-[var(--foreground)] outline-none placeholder:text-[var(--muted)] focus-visible:ring-2 focus-visible:ring-[var(--ring)] sm:text-4xl!"
+                placeholder="0"
+              />
+              <button
+                type="button"
+                aria-label="Open calculator"
+                onClick={() => setIsCalculatorOpen(true)}
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--foreground)] transition-colors hover:border-[var(--border-strong)] hover:bg-[var(--panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+              >
+                <svg
+                  aria-hidden="true"
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect x="4" y="3" width="16" height="18" rx="3" />
+                  <path d="M8 8h8M8 12h8M8 16h5" />
+                </svg>
+              </button>
+            </div>
             <div className="flex justify-end min-[400px]:contents">
               <CurrencySelector
                 side="base"
@@ -449,6 +481,16 @@ export default function CurrencyConverter() {
           >
             Try again
           </button>
+        </div>
+      )}
+
+      {isCalculatorOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(17,19,21,0.34)] p-4 backdrop-blur-[2px]">
+          <Calculator
+            initialValue={amount}
+            onUseResult={applyCalculatorResult}
+            onClose={() => setIsCalculatorOpen(false)}
+          />
         </div>
       )}
     </section>
