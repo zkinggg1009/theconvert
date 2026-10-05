@@ -232,13 +232,23 @@ function formatRateDate(value: string): string {
       }).format(date);
 }
 
-export default function CurrencyConverter() {
-  const [amount, setAmount] = useState("100");
-  const [base, setBase] = useState("USD");
-  const [quote, setQuote] = useState("MYR");
+export default function CurrencyConverter({
+  initialBase = "USD",
+  initialQuote = "MYR",
+  initialAmount = "100",
+  initialRate = null,
+}: {
+  initialBase?: string;
+  initialQuote?: string;
+  initialAmount?: string;
+  initialRate?: ExchangeRate | null;
+}) {
+  const [amount, setAmount] = useState(initialAmount);
+  const [base, setBase] = useState(initialBase);
+  const [quote, setQuote] = useState(initialQuote);
   const [currencies, setCurrencies] = useState<CurrencyMetadata[]>([]);
-  const [exchangeRate, setExchangeRate] = useState<ExchangeRate | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [exchangeRate, setExchangeRate] = useState<ExchangeRate | null>(initialRate);
+  const [isLoading, setIsLoading] = useState(initialRate === null);
   const [error, setError] = useState<"currencies" | "rates" | null>(null);
   const [retryCount, setRetryCount] = useState(0);
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);

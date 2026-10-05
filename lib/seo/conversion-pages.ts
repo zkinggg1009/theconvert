@@ -124,7 +124,21 @@ export function getRelatedSlugs(slug: string): string[] {
     return page.slug !== definition.slug;
   });
 
-  return sameTypeMatches.slice(0, 4).map((page) => page.slug);
+  const getPair = (page: ConversionPageDefinition) => page.type === "unit"
+    ? [page.fromUnit, page.toUnit]
+    : [page.fromCode, page.toCode];
+  const [from, to] = getPair(definition);
+
+  return sameTypeMatches
+    .map((page, index) => {
+      const [candidateFrom, candidateTo] = getPair(page);
+      const isReverse = candidateFrom === to && candidateTo === from;
+      const isRelated = definition.type === "unit" || candidateFrom === from || candidateTo === from || candidateFrom === to || candidateTo === to;
+      return { page, index, rank: isReverse ? 0 : isRelated ? 1 : 2 };
+    })
+    .sort((left, right) => left.rank - right.rank || left.index - right.index)
+    .slice(0, 4)
+    .map(({ page }) => page.slug);
 }
 
 export function getPageTitle(definition: ConversionPageDefinition): string {
@@ -211,15 +225,19 @@ export function buildFaqs(definition: ConversionPageDefinition) {
   return [
     {
       question: `How does the ${definition.fromCode} to ${definition.toCode} converter work?`,
-      answer: `The app uses the latest available exchange rate for this pair and multiplies your entered amount to calculate the converted value.`,
+      answer: `Enter an amount in ${definition.fromCode}. The converter multiplies it by the latest available ${definition.fromCode}/${definition.toCode} reference rate to show the result in ${definition.toCode}.`,
     },
     {
-      question: `Is the displayed rate live?`,
-      answer: `The rate shown in the converter is the latest available reference rate returned by the data source at the time the page loads.`,
+      question: `What exchange rate does TheConverT use for ${definition.fromCode} to ${definition.toCode}?`,
+      answer: `TheConverT uses the latest available ${definition.fromCode}/${definition.toCode} reference rate from Frankfurter. The rate date is shown with the converter when a rate is available; it is not a real-time trading quote.`,
     },
     {
-      question: `Can I compare related currency pairs?`,
-      answer: `Yes. The related currency links below make it easy to switch to similar conversions without starting over.`,
+      question: `Can the ${definition.fromCode} to ${definition.toCode} exchange rate change?`,
+      answer: `Yes. Exchange rates change over time. This page uses the latest rate record currently available from its reference source, so a later lookup may show a different rate.`,
+    },
+    {
+      question: `Can my bank or card provider use a different ${definition.fromCode} to ${definition.toCode} rate?`,
+      answer: `Yes. Banks, card networks, and remittance providers may use their own rates and add spreads or fees, so their final conversion amount can differ from this reference calculation.`,
     },
   ];
 }

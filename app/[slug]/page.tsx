@@ -5,7 +5,8 @@ import { ConversionPageLayout } from "@/components/seo/ConversionPageLayout";
 import { getAllConversionPageSlugs, getConversionPageDefinition } from "@/lib/seo/conversion-pages";
 import { buildSeoMetadata } from "@/lib/seo/metadata";
 import { convertValue } from "@/lib/conversions";
-import { getExchangeRate } from "@/lib/currency";
+import { getExchangeRate, type ExchangeRate } from "@/lib/currency";
+import CurrencyConverter from "@/components/CurrencyConverter";
 import { notFound } from "next/navigation";
 
 export function generateStaticParams() {
@@ -31,13 +32,12 @@ export default async function SeoConversionPage({ params }: { params: Promise<{ 
     ? convertValue(value, definition.fromUnit, definition.toUnit, definition.category)
     : 1;
 
-  let liveRate: number | null = null;
+  let initialExchangeRate: ExchangeRate | null = null;
   if (definition.type === "currency") {
     try {
-      const rate = await getExchangeRate(definition.fromCode, definition.toCode);
-      liveRate = rate.rate;
+      initialExchangeRate = await getExchangeRate(definition.fromCode, definition.toCode);
     } catch {
-      liveRate = null;
+      initialExchangeRate = null;
     }
   }
 
@@ -53,7 +53,7 @@ export default async function SeoConversionPage({ params }: { params: Promise<{ 
           breadcrumbTitle={definition.type === "unit"
             ? `${definition.fromUnit} to ${definition.toUnit} Converter`
             : `${definition.fromCode} to ${definition.toCode} Converter`}
-          liveRate={liveRate}
+          liveRate={initialExchangeRate?.rate ?? null}
           converter={
             definition.type === "unit" ? (
               <Converter
@@ -63,7 +63,15 @@ export default async function SeoConversionPage({ params }: { params: Promise<{ 
                 initialInputValue="1"
                 embedded
               />
-            ) : null
+            ) : (
+              <CurrencyConverter
+                key={slug}
+                initialBase={definition.fromCode}
+                initialQuote={definition.toCode}
+                initialAmount="1"
+                initialRate={initialExchangeRate}
+              />
+            )
           }
         />
       </main>

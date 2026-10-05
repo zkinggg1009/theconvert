@@ -1,8 +1,10 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { ConversionPageDefinition } from "@/lib/seo/conversion-pages";
-import { getPageFormula, getPageIntro, getRelatedSlugs, buildFaqs, getPageDescription, getPageTitle } from "@/lib/seo/conversion-pages";
+import { getConversionPageDefinition, getPageFormula, getPageIntro, getRelatedSlugs, buildFaqs, getPageDescription, getPageTitle } from "@/lib/seo/conversion-pages";
 import { formatNumber } from "@/lib/seo/format";
+import { convertValue } from "@/lib/conversions";
+import { calculateConversion } from "@/lib/currency";
 
 export function ConversionPageLayout({
   definition,
@@ -39,10 +41,20 @@ export function ConversionPageLayout({
       { "@type": "ListItem", position: 3, name: breadcrumbTitle, item: `https://theconvert.online/${pageSlug}` },
     ],
   };
+  const faqData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(({ question, answer }) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer },
+    })),
+  };
 
   return (
     <article className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData).replace(/</g, "\\u003c") }} />
+      {faqs.length > 0 && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqData).replace(/</g, "\\u003c") }} />}
       <header className="mb-8 text-center">
         <nav aria-label="Breadcrumb" className="mb-4 text-sm text-[var(--muted)]">
           <div className="flex flex-wrap items-center justify-center gap-2">
@@ -74,7 +86,7 @@ export function ConversionPageLayout({
         <p className="mb-3 text-sm font-medium uppercase tracking-[0.12em] text-[var(--muted)]">
           {definition.type === "unit"
             ? definition.category === "Temperature" ? "Example conversion" : "Conversion factor"
-            : "Live exchange rate"}
+            : "Latest available exchange rate"}
         </p>
 
         {definition.type === "unit" ? (
@@ -86,7 +98,9 @@ export function ConversionPageLayout({
         ) : (
           <div className="text-sm text-[var(--muted)]">
             <p>
-              1 {definition.fromCode} = {liveRate ? formatNumber(liveRate, 4) : "rate unavailable"} {definition.toCode}
+              {liveRate != null
+                ? <>1 {definition.fromCode} = {formatNumber(liveRate, 4)} {definition.toCode}</>
+                : "The latest available exchange rate is currently unavailable."}
             </p>
           </div>
         )}
@@ -113,7 +127,7 @@ export function ConversionPageLayout({
                 {unitTableValues.map((amount) => (
                   <tr key={amount} className="border-t border-[var(--border)]">
                     <td className="px-4 py-3 text-[var(--foreground)]">{amount}</td>
-                    <td className="px-4 py-3 text-[var(--muted)]">{formatNumber((amount * convertedValue) / value || amount, 4)}</td>
+                    <td className="px-4 py-3 text-[var(--muted)]">{formatNumber(convertValue(amount, definition.fromUnit, definition.toUnit, definition.category), 4)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -133,7 +147,7 @@ export function ConversionPageLayout({
                 {definition.tableValues.map((amount) => (
                   <tr key={amount} className="border-t border-[var(--border)]">
                     <td className="px-4 py-3 text-[var(--foreground)]">{amount}</td>
-                    <td className="px-4 py-3 text-[var(--muted)]">{formatNumber(amount * liveRate, 4)}</td>
+                    <td className="px-4 py-3 text-[var(--muted)]">{formatNumber(calculateConversion(amount, liveRate), 4)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -167,7 +181,7 @@ export function ConversionPageLayout({
               href={`/${slug}`}
               className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--foreground)] transition-colors hover:border-[var(--border-strong)] hover:bg-[var(--panel)]"
             >
-              {slug.replace(/-/g, " ")}
+              {getPageTitle(getConversionPageDefinition(slug) ?? definition)}
             </Link>
           ))}
         </div>
